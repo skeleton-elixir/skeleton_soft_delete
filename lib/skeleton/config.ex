@@ -1,6 +1,6 @@
 defmodule Skeleton.SoftDelete.Config do
-  def table_suffix do
-    config(:table_suffix, "_without_deleted")
+  def view_suffix do
+    config(:view_suffix, "_without_deleted")
   end
 
   def config(key, default \\ nil) do

@@ -14,6 +14,6 @@ defmodule Skeleton.SoftDelete.Schema do
   end
 
   def soft_delete(table_name) do
-    "#{table_name}#{table_suffix()}"
+    "#{table_name}#{view_suffix()}"
   end
 end

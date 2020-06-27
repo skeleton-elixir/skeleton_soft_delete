@@ -47,13 +47,13 @@ defmodule Skeleton.SoftDelete.Migration do
 
   defp drop_view(table_name) do
     execute("""
-      DROP VIEW IF EXISTS #{table_name}#{table_suffix()};
+      DROP VIEW IF EXISTS #{table_name}#{view_suffix()};
     """)
   end
 
   defp create_view(table_name) do
     execute("""
-      CREATE VIEW #{table_name}#{table_suffix()} AS
+      CREATE VIEW #{table_name}#{view_suffix()} AS
       SELECT * FROM #{table_name} WHERE deleted_at IS NULL;
     """)
   end
@@ -65,7 +65,7 @@ defmodule Skeleton.SoftDelete.Migration do
   defp create_trigger(table_name, singular_name) do
     execute("""
       CREATE TRIGGER soft_delete_#{singular_name}
-      INSTEAD OF DELETE ON #{table_name}#{table_suffix()}
+      INSTEAD OF DELETE ON #{table_name}#{view_suffix()}
       FOR EACH ROW EXECUTE PROCEDURE soft_delete();
     """)
   end
@@ -73,7 +73,7 @@ defmodule Skeleton.SoftDelete.Migration do
   defp drop_trigger(table_name, singular_name) do
     execute("""
       DROP TRIGGER IF EXISTS soft_delete_#{singular_name}
-      ON #{table_name}#{table_suffix()}
+      ON #{table_name}#{view_suffix()}
     """)
   end
 end
