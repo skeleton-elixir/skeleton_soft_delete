@@ -1,5 +1,5 @@
-defmodule Skeleton.SoftDelete.Repo.Migrations.CreateUsers do
-  use Skeleton.SoftDelete.App, :migration
+defmodule Skeleton.App.Repo.Migrations.CreateUsers do
+  use Skeleton.App, :migration
 
   def change do
     before_setup_soft_delete(:users, :user)

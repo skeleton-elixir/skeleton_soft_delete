@@ -1,5 +1,6 @@
-defmodule Skeleton.SoftDelete.SchemaTest do
-  use Skeleton.SoftDelete.TestCase
+defmodule Skeleton.App.SchemaTest do
+  use Skeleton.App.TestCase
+  alias Skeleton.App.User
 
   describe "deleting user" do
     test "mark as deleted" do

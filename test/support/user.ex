@@ -1,5 +1,5 @@
-defmodule Skeleton.SoftDelete.User do
-  use Skeleton.SoftDelete.App, :schema
+defmodule Skeleton.App.User do
+  use Skeleton.App, :schema
 
   schema soft_delete("users") do
     field :name, :string
@@ -10,6 +10,6 @@ defmodule Skeleton.SoftDelete.User do
   end
 
   def with_deleted do
-    {"users", Skeleton.SoftDelete.User}
+    {"users", Skeleton.App.User}
   end
 end

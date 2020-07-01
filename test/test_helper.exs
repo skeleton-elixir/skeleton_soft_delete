@@ -1,4 +1,4 @@
-defmodule Skeleton.SoftDelete.TestCase do
+defmodule Skeleton.App.TestCase do
   use ExUnit.CaseTemplate
 
   using opts do
@@ -7,17 +7,17 @@ defmodule Skeleton.SoftDelete.TestCase do
       import Ecto.Query
       import Ecto.Changeset
       alias Ecto.Adapters.SQL
-      alias Skeleton.SoftDelete.{Repo, User}
+      alias Skeleton.App.Repo
     end
   end
 
   setup do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Skeleton.SoftDelete.Repo)
-    Ecto.Adapters.SQL.Sandbox.mode(Skeleton.SoftDelete.Repo, {:shared, self()})
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Skeleton.App.Repo)
+    Ecto.Adapters.SQL.Sandbox.mode(Skeleton.App.Repo, {:shared, self()})
   end
 end
 
-Skeleton.SoftDelete.Repo.start_link()
-Ecto.Adapters.SQL.Sandbox.mode(Skeleton.SoftDelete.Repo, :manual)
+Skeleton.App.Repo.start_link()
+Ecto.Adapters.SQL.Sandbox.mode(Skeleton.App.Repo, :manual)
 
 ExUnit.start()

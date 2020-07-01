@@ -1,8 +1,8 @@
 use Mix.Config
 
-config :skeleton_soft_delete, ecto_repos: [Skeleton.SoftDelete.Repo]
+config :skeleton_soft_delete, ecto_repos: [Skeleton.App.Repo]
 
-config :skeleton_soft_delete, Skeleton.SoftDelete.Repo,
+config :skeleton_soft_delete, Skeleton.App.Repo,
   adapter: Ecto.Adapters.Postgres,
   pool: Ecto.Adapters.SQL.Sandbox,
   database: "skeleton_soft_delete_test",

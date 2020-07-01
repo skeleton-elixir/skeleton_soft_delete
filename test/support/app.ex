@@ -1,4 +1,4 @@
-defmodule Skeleton.SoftDelete.App do
+defmodule Skeleton.App do
   def schema do
     quote do
       use Ecto.Schema

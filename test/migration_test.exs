@@ -1,5 +1,6 @@
 defmodule Skeleton.SoftDelete.MigrationTest do
-  use Skeleton.SoftDelete.TestCase
+  use Skeleton.App.TestCase
+  alias Skeleton.App.User
 
   describe "checks" do
     test "if soft_delete function exists" do
