@@ -59,7 +59,7 @@ defmodule Skeleton.SoftDelete.Migration do
   end
 
   defp create_index(table_name) do
-    create(index(table_name, [:deleted_at], where: "deleted_at IS NULL"))
+    create_if_not_exists(index(table_name, [:deleted_at], where: "deleted_at IS NULL"))
   end
 
   defp create_trigger(table_name, singular_name) do
