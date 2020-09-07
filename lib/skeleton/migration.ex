@@ -2,78 +2,78 @@ defmodule Skeleton.SoftDelete.Migration do
   use Ecto.Migration
   import Skeleton.SoftDelete.Config
 
-  def before_setup_soft_delete(table_name, singular_name) do
+  def before_setup_soft_delete(table_name, singular_name, prefix \\ "public") do
     create_or_replace_function()
-    drop_view(table_name)
-    drop_trigger(table_name, singular_name)
+    drop_view(prefix, table_name)
+    drop_trigger(prefix, table_name, singular_name)
   end
 
-  def after_setup_soft_delete(table_name, singular_name) do
-    add_soft_delete_field(table_name)
-    create_view(table_name)
-    create_index(table_name)
-    create_trigger(table_name, singular_name)
+  def after_setup_soft_delete(table_name, singular_name, prefix \\ "public") do
+    add_soft_delete_field(prefix, table_name)
+    create_view(prefix, table_name)
+    create_index(prefix, table_name)
+    create_trigger(prefix, table_name, singular_name)
   end
 
-  def delete_soft_delete(table_name, singular_name) do
-    drop_trigger(table_name, singular_name)
-    drop_view(table_name)
+  def delete_soft_delete(table_name, singular_name, prefix \\ "public") do
+    drop_trigger(prefix, table_name, singular_name)
+    drop_view(prefix, table_name)
   end
 
   def delete_soft_delete_function do
     execute("""
-      DROP FUNCTION IF EXISTS soft_delete();
+      DROP FUNCTION IF EXISTS public.soft_delete();
     """)
   end
 
   def create_or_replace_function do
     execute("""
-      CREATE OR REPLACE FUNCTION soft_delete() RETURNS trigger AS $$
+      CREATE OR REPLACE FUNCTION public.soft_delete() RETURNS trigger AS $$
         DECLARE
           command text := ' SET deleted_at = current_timestamp WHERE id = $1';
         BEGIN
-          EXECUTE 'UPDATE ' || TG_TABLE_NAME || command USING OLD.id;
+          EXECUTE 'UPDATE ' || TG_TABLE_SCHEMA || '.' || TG_TABLE_NAME || command USING OLD.id;
           RETURN OLD;
         END;
       $$ LANGUAGE plpgsql;
     """)
   end
 
-  def add_soft_delete_field(table_name) do
-    alter table(table_name) do
+  def add_soft_delete_field(prefix, table_name) do
+    alter table(table_name, prefix: prefix) do
       add_if_not_exists(:deleted_at, :naive_datetime_usec)
     end
   end
 
-  defp drop_view(table_name) do
+  defp drop_view(prefix, table_name) do
     execute("""
-      DROP VIEW IF EXISTS #{table_name}#{view_suffix()};
+      DROP VIEW IF EXISTS "#{prefix}"."#{table_name}#{view_suffix()}";
     """)
   end
 
-  defp create_view(table_name) do
+  defp create_view(prefix, table_name) do
     execute("""
-      CREATE VIEW #{table_name}#{view_suffix()} AS
-      SELECT * FROM #{table_name} WHERE deleted_at IS NULL;
+      CREATE VIEW "#{prefix}"."#{table_name}#{view_suffix()}" AS
+      SELECT * FROM "#{prefix}"."#{table_name}" WHERE deleted_at IS NULL;
     """)
   end
 
-  defp create_index(table_name) do
-    create_if_not_exists(index(table_name, [:deleted_at], where: "deleted_at IS NULL"))
+  defp create_index(prefix, table_name) do
+    create_if_not_exists(index(table_name, [:deleted_at], prefix: prefix, where: "deleted_at IS NULL"))
   end
 
-  defp create_trigger(table_name, singular_name) do
+  defp create_trigger(prefix, table_name, singular_name) do
     execute("""
       CREATE TRIGGER soft_delete_#{singular_name}
-      INSTEAD OF DELETE ON #{table_name}#{view_suffix()}
-      FOR EACH ROW EXECUTE PROCEDURE soft_delete();
+      INSTEAD OF DELETE ON "#{prefix}"."#{table_name}#{view_suffix()}"
+      FOR EACH ROW EXECUTE PROCEDURE public.soft_delete();
     """)
   end
 
-  defp drop_trigger(table_name, singular_name) do
+  defp drop_trigger(prefix, table_name, singular_name) do
     execute("""
       DROP TRIGGER IF EXISTS soft_delete_#{singular_name}
-      ON #{table_name}#{view_suffix()}
+      ON "#{prefix}"."#{table_name}#{view_suffix()}"
     """)
   end
 end
