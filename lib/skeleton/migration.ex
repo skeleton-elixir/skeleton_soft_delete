@@ -32,7 +32,7 @@ defmodule Skeleton.SoftDelete.Migration do
         DECLARE
           command text := ' SET deleted_at = current_timestamp WHERE id = $1';
         BEGIN
-          EXECUTE 'UPDATE ' || TG_TABLE_SCHEMA || '.' || TG_TABLE_NAME || command USING OLD.id;
+          EXECUTE 'UPDATE "' || TG_TABLE_SCHEMA || '"."' || TG_TABLE_NAME || '"' || command USING OLD.id;
           RETURN OLD;
         END;
       $$ LANGUAGE plpgsql;
