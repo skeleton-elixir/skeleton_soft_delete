@@ -8,8 +8,11 @@ defmodule Skeleton.SoftDelete.Migration do
     drop_trigger(prefix, table_name, singular_name)
   end
 
+  def soft_delete() do
+    add(:deleted_at, :naive_datetime_usec)
+  end
+
   def after_setup_soft_delete(table_name, singular_name, prefix \\ "public") do
-    add_soft_delete_field(prefix, table_name)
     create_view(prefix, table_name)
     create_index(prefix, table_name)
     create_trigger(prefix, table_name, singular_name)
@@ -39,12 +42,6 @@ defmodule Skeleton.SoftDelete.Migration do
     """)
   end
 
-  def add_soft_delete_field(prefix, table_name) do
-    alter table(table_name, prefix: prefix) do
-      add_if_not_exists(:deleted_at, :naive_datetime_usec)
-    end
-  end
-
   defp drop_view(prefix, table_name) do
     execute("""
       DROP VIEW IF EXISTS "#{prefix}"."#{table_name}#{view_suffix()}";
@@ -59,7 +56,9 @@ defmodule Skeleton.SoftDelete.Migration do
   end
 
   defp create_index(prefix, table_name) do
-    create_if_not_exists(index(table_name, [:deleted_at], prefix: prefix, where: "deleted_at IS NULL"))
+    create_if_not_exists(
+      index(table_name, [:deleted_at], prefix: prefix, where: "deleted_at IS NULL")
+    )
   end
 
   defp create_trigger(prefix, table_name, singular_name) do

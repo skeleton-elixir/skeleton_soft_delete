@@ -9,6 +9,7 @@ defmodule Skeleton.App.Repo.Migrations.CreateUsers do
       add :name, :string
       add :email, :string
 
+      soft_delete()
       timestamps()
     end
 
