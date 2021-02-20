@@ -8,7 +8,7 @@ defmodule Skeleton.SoftDelete.Migration do
     drop_trigger(prefix, table_name, singular_name)
   end
 
-  def soft_delete() do
+  def add_soft_delete_field() do
     add(:deleted_at, :naive_datetime_usec)
   end
 
