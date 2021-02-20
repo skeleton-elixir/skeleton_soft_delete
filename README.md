@@ -53,7 +53,7 @@ defmodule App do
   def schema do
     quote do
       use Ecto.Schema
-      use Skeleton.SoftDelete.Schema
+      import Skeleton.SoftDelete.Schema
       import Ecto.Changeset
 
       @primary_key {:id, :binary_id, autogenerate: true}
@@ -88,7 +88,7 @@ defmodule App.Repo.Migrations.CreateUsers do
       add :id, :binary_id, primary_key: true
       add :email, :string
 
-      soft_delete()
+      add_soft_delete_field()
       timestamps()
     end
 
