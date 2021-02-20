@@ -88,6 +88,7 @@ defmodule App.Repo.Migrations.CreateUsers do
       add :id, :binary_id, primary_key: true
       add :email, :string
 
+      soft_delete()
       timestamps()
     end
 
@@ -103,7 +104,7 @@ remover a view `_without_deleted` da sua tabela e por fim remover a trigger cria
 Isso se faz necessário, pois caso você venha alterar ou adicionar uma columna em sua tabela, você tenha
 a view atualizada junto a trigger.
 
-Já a funcão `after_setup_soft_delete` irã criar a columna `deleted_at` em sua tabela, junto com o índice, view e trigger.
+Já a funcão `after_setup_soft_delete` irá criar o índice o índice, view e trigger.
 
 ### Criando o Schema
 
