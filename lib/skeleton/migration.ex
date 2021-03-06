@@ -9,7 +9,7 @@ defmodule Skeleton.SoftDelete.Migration do
   end
 
   def add_soft_delete_field() do
-    add(:deleted_at, :naive_datetime_usec)
+    add(:deleted_at, deleted_at_field_type())
   end
 
   def after_setup_soft_delete(table_name, singular_name, prefix \\ "public") do

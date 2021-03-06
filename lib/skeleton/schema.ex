@@ -3,7 +3,7 @@ defmodule Skeleton.SoftDelete.Schema do
 
   defmacro soft_delete_field() do
     quote do
-      Ecto.Schema.field(:deleted_at, :naive_datetime_usec)
+      Ecto.Schema.field(:deleted_at, deleted_at_field_type())
     end
   end
 
