@@ -1,0 +1,11 @@
+vendor
+priv/static
+assets/node_modules
+deps
+_build
+.elixir_ls
+.vscode
+cover
+tmp
+uploads
+dump.rdb

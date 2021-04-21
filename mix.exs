@@ -2,7 +2,7 @@ defmodule SkeletonSoftDelete.MixProject do
   use Mix.Project
 
   @version "1.0.0"
-  @url "https://github.com/skeleton-elixir/skeleton_soft_delete"
+  @source_url "https://github.com/skeleton-elixir/skeleton_soft_delete"
   @maintainers [
     "Diego Nogueira",
     "Jhonathas Matos"
@@ -13,14 +13,15 @@ defmodule SkeletonSoftDelete.MixProject do
       name: "SkeletonSoftDelete",
       app: :skeleton_soft_delete,
       version: @version,
-      elixir: "~> 1.10",
+      elixir: "~> 1.8",
       elixirc_paths: elixirc_paths(Mix.env()),
       package: package(),
-      source_url: @url,
+      source_url: @source_url,
       maintainers: @maintainers,
-      description: "Elixir structure",
+      description: description(),
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      aliases: aliases()
     ]
   end
 
@@ -39,6 +40,10 @@ defmodule SkeletonSoftDelete.MixProject do
     ]
   end
 
+  defp description do
+    "O Skeleton SoftDelete ajuda no tratamento de dados excluídos em sua aplicação, onde, nada é realmente deletado."
+  end
+
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
 
@@ -46,8 +51,21 @@ defmodule SkeletonSoftDelete.MixProject do
     [
       maintainers: @maintainers,
       licenses: ["MIT"],
-      links: %{github: @url},
-      files: ~w(lib) ++ ~w(CHANGELOG.md LICENSE mix.exs README.md)
+      files: ~w(lib CHANGELOG.md LICENSE mix.exs README.md),
+      links: %{
+        "GitHub" => @source_url,
+        "Changelog" => "#{@source_url}/blob/master/CHANGELOG.md"
+      }
+    ]
+  end
+
+  defp aliases do
+    [
+      test: [
+        "ecto.create --quiet",
+        "ecto.migrate --quiet",
+        "test"
+      ]
     ]
   end
 end
