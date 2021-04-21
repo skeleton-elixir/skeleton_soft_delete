@@ -1,8 +1,7 @@
 # Sobre o Skeleton SoftDelete
 
 O Skeleton SoftDelete ajuda no tratamento de dados excluídos em sua aplicação, onde, nada é realmente deletado.
-O que o SoftDelete faz é sempre que houver um delete em uma tabela, ele irá marcar com uma flag `deleted_at` a linha demostrando
-que foi excluída.
+O que o SoftDelete faz é sempre que houver um delete em uma tabela, ele irá marcar com uma flag `deleted_at` a linha para desmonstrar que foi excluída.
 Toda técnica se baseia na criação de views, triggers e funções diretamente no banco de dados.
 
 # Funcionamento
@@ -19,8 +18,7 @@ Ela será sua tabela de registros ativos, filtrando os registro deletados.
 
 ## Trigger que invocará a função de exclusão
 
-Essa view será criada em sua view, onde, após um `DELETE`, será invocada a funcão `soft_delte` e ao invés de
-excluir, será marcada como excluída.
+Essa função será criada em sua view, onde, após um `DELETE` no banco, será invocada a funcão `soft_delte` e ao invés de excluir, será marcada como excluída.
 
 ## View VS tabela
 
@@ -33,7 +31,7 @@ a tabela, funciona de maneira normal, retornando todos os dados, incluíndo os e
 ```elixir
 def deps do
   [
-    {:skeleton_soft_delete, github: "skeleton-elixir/skeleton_soft_delete"},
+    {:skeleton_soft_delete, "~> 1.0.0"}
   ]
 end
 ```
@@ -49,16 +47,14 @@ Essa é a configuração padrão, você não precisa declará-la se não desejar
 ## Criando o contexto
 
 ```elixir
+# lib/app/app.ex
+
 defmodule App do
   def schema do
     quote do
       use Ecto.Schema
       import Skeleton.SoftDelete.Schema
       import Ecto.Changeset
-
-      @primary_key {:id, :binary_id, autogenerate: true}
-      @foreign_key_type :binary_id
-      @timestamps_opts [type: :naive_datetime_usec]
     end
   end
 
@@ -78,6 +74,8 @@ end
 ### Criando a migration
 
 ```elixir
+# priv/migrations/00000000000000_create_users.exs
+
 defmodule App.Repo.Migrations.CreateUsers do
   use App, :migration
 
@@ -89,6 +87,10 @@ defmodule App.Repo.Migrations.CreateUsers do
       add :email, :string
 
       add_soft_delete_field()
+<<<<<<< HEAD
+=======
+
+>>>>>>> Release 1.0.0
       timestamps()
     end
 
@@ -99,16 +101,21 @@ defmodule App.Repo.Migrations.CreateUsers do
 end
 ```
 
-A função `before_setup_soft_delete` será responsável, por recriar a função `soft_delete`,
-remover a view `_without_deleted` da sua tabela e por fim remover a trigger criada na view.
-Isso se faz necessário, pois caso você venha alterar ou adicionar uma columna em sua tabela, você tenha
-a view atualizada junto a trigger.
+A função `before_setup_soft_delete` será responsável por remover a view `_without_deleted` caso a mesma tenha sido criada anteriormente e tamém a trigger responsável por não deletar o registro e sim informar uma data de deleção `deleted_at`. Essa remoção se faz necessária pois caso seja incluído ou alterado um algum campo, as atualizações dos campos serão contemplados na nova view que será criada através da função `after_setup_soft_delete` que será detalhada a baixo.
 
+A funcão `add_soft_delete_field()` irá criar a columna `deleted_at` em sua tabela. Essa coluna será responsável por informar que e quando aquele registro foi excluído.
+
+<<<<<<< HEAD
 Já a funcão `after_setup_soft_delete` irá criar o índice o índice, view e trigger.
+=======
+A função `after_setup_soft_delete` será responsável por recriar a view `_without_deleted` e também a trigger do soft_delete.
+>>>>>>> Release 1.0.0
 
 ### Criando o Schema
 
 ```elixir
+# lib/app/accounts/user/user.ex
+
 defmodule App.Accounts.User do
   use App, :schema
 
@@ -126,7 +133,10 @@ end
 ```
 
 A partir de agora, qualquer `Repo.delete` utilizando seu schema `User`, irá sinalizar que a linha foi excluída.
-Você poderá realizar queries com segurança nesse schema `User`, pois ele sempre filtrará os
-registros excluídos.
+Você poderá realizar queries com segurança nesse schema `User`, pois ele sempre filtrará os registros excluídos.
 
+<<<<<<< HEAD
 Caso voê precise realmente trazer os registros excluídos em uma query, basta utilizar o Schema assim: `User.with_deleted()`.
+=======
+Caso você precise realmente trazer os registros excluídos em uma query, basta utilizar o Schema assim: `User.with_deleted()`, exemplo: `Repo.all(User.with_deleted())` trará todos os registros, incluindo os deletados. Já Repo.all(User) trará apenas os registros que não foram marcados como deletados, ou seja, os que o processo do soft_delete não incluiu uma data no campo `deleted_at`.
+>>>>>>> Release 1.0.0

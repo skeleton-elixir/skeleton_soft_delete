@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    command: /bin/sh -c "while sleep 1000; do :; done"
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: 123456
+    volumes:
+      - .:/app:cached
+
+  postgres:
+    image: postgres:13.0
+    environment:
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+
+volumes:
+  postgres_volume:
