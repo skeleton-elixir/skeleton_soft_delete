@@ -87,10 +87,7 @@ defmodule App.Repo.Migrations.CreateUsers do
       add :email, :string
 
       add_soft_delete_field()
-<<<<<<< HEAD
-=======
 
->>>>>>> Release 1.0.0
       timestamps()
     end
 
@@ -104,12 +101,7 @@ end
 A função `before_setup_soft_delete` será responsável por remover a view `_without_deleted` caso a mesma tenha sido criada anteriormente e tamém a trigger responsável por não deletar o registro e sim informar uma data de deleção `deleted_at`. Essa remoção se faz necessária pois caso seja incluído ou alterado um algum campo, as atualizações dos campos serão contemplados na nova view que será criada através da função `after_setup_soft_delete` que será detalhada a baixo.
 
 A funcão `add_soft_delete_field()` irá criar a columna `deleted_at` em sua tabela. Essa coluna será responsável por informar que e quando aquele registro foi excluído.
-
-<<<<<<< HEAD
-Já a funcão `after_setup_soft_delete` irá criar o índice o índice, view e trigger.
-=======
 A função `after_setup_soft_delete` será responsável por recriar a view `_without_deleted` e também a trigger do soft_delete.
->>>>>>> Release 1.0.0
 
 ### Criando o Schema
 
@@ -135,8 +127,4 @@ end
 A partir de agora, qualquer `Repo.delete` utilizando seu schema `User`, irá sinalizar que a linha foi excluída.
 Você poderá realizar queries com segurança nesse schema `User`, pois ele sempre filtrará os registros excluídos.
 
-<<<<<<< HEAD
-Caso voê precise realmente trazer os registros excluídos em uma query, basta utilizar o Schema assim: `User.with_deleted()`.
-=======
 Caso você precise realmente trazer os registros excluídos em uma query, basta utilizar o Schema assim: `User.with_deleted()`, exemplo: `Repo.all(User.with_deleted())` trará todos os registros, incluindo os deletados. Já Repo.all(User) trará apenas os registros que não foram marcados como deletados, ou seja, os que o processo do soft_delete não incluiu uma data no campo `deleted_at`.
->>>>>>> Release 1.0.0
